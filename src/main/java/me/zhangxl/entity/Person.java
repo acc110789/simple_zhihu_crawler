@@ -58,14 +58,14 @@ public class Person {
 
     public String briefString() {
         return "id:" + id +
-                ",name:" + name +
-                ",location:" + location +
-                ",business:" + business +
-                ",gender:" + gender +
-                ",employment:" + employment +
-                ",position:" + position +
-                ",education:" + education +
-                ",educationExtra:" + educationExtra;
+                "   ,name:" + name +
+                "   ,location:" + location +
+                "   ,business:" + business +
+                "   ,gender:" + gender +
+                "   ,employment:" + employment +
+                "   ,position:" + position +
+                "   ,education:" + education +
+                "   ,educationExtra:" + educationExtra;
     }
 
     @Override
@@ -303,6 +303,10 @@ public class Person {
         return gender;
     }
 
+    public String getGenderAsString(){
+        return gender == null ? null : gender.toString();
+    }
+
     public String getEmployment() {
         return employment;
     }
@@ -323,39 +327,47 @@ public class Person {
         return description;
     }
 
+    private <T> T getNotNullOrDefault(T value,T defalut){
+        return value == null ? defalut : value;
+    }
+
+    private Integer getNonNullOrZero(Integer value){
+        return getNotNullOrDefault(value,0);
+    }
+
     public Integer getAgreeNum() {
-        return agreeNum;
+        return getNonNullOrZero(agreeNum);
     }
 
     public Integer getThanksNum() {
-        return thanksNum;
+        return getNonNullOrZero(thanksNum);
     }
 
     public Integer getAskNum() {
-        return askNum;
+        return getNonNullOrZero(askNum);
     }
 
     public Integer getAnswerNum() {
-        return answerNum;
+        return getNonNullOrZero(answerNum);
     }
 
     public Integer getPostNum() {
-        return postNum;
+        return getNonNullOrZero(postNum);
     }
 
     public Integer getCollectionNum() {
-        return collectionNum;
+        return getNonNullOrZero(collectionNum);
     }
 
     public Integer getLogNum() {
-        return logNum;
+        return getNonNullOrZero(logNum);
     }
 
     public Integer getFolloweeNum() {
-        return followeeNum;
+        return getNonNullOrZero(followeeNum);
     }
 
     public Integer getFollwerNum() {
-        return follwerNum;
+        return getNonNullOrZero(follwerNum);
     }
 }

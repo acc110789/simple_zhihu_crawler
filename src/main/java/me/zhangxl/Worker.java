@@ -1,6 +1,7 @@
 package me.zhangxl;
 
 import me.zhangxl.entity.Person;
+import me.zhangxl.utils.StringUrl;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,19 +21,23 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         while (!QueueUtils.isEmpty()) {
-            String url = QueueUtils.peek();
-            String html = HttpUtils.getContentOfHttpGET(url);
+            StringUrl url = QueueUtils.peek();
+            String html = HttpUtils.getContentOfHttpGET(url.getCurrent());
             if (html == null) {
-                System.err.println("no content in " + url);
+                System.err.println("no content in " + QueueUtils.poll());
                 continue;
             }
             Document document = Jsoup.parse(html);
+            if(!document.select("body > div.page > div.error").isEmpty()){
+                System.out.println("发生了错误:" + QueueUtils.poll());
+                continue;
+            }
             Elements infos = document.select("div.body.clearfix");
             /**
              * 用户基本信息获取
              */
             //下面开始build一个用户的信息
-            Person.PersonBuilder builder = Person.create(DBUtils.getMd5(url));
+            Person.PersonBuilder builder = Person.create(DBUtils.getMd5(url.getCurrent()));
             //找头像的地址
             Elements temp = infos.select("img.Avatar");
             if (temp.size() > 0) {
@@ -140,7 +145,7 @@ public class Worker implements Runnable {
             }
             Person person = builder.build();
             //person build出来了，下面插进数据库
-            if (!DBUtils.containUrl(url)) {
+            if (!DBUtils.containUrl(url.getCurrent())) {
                 if (DBUtils.insertData(person)) {
                     System.out.println("person[" + person.briefString() + "] insert success!");
                 }
@@ -157,7 +162,7 @@ public class Worker implements Runnable {
                 if (current.size() > 0) {
                     String tmpUrl = current.get(0).attr("href") + "/followees";
                     if (!DBUtils.containUrl(tmpUrl)) {
-                        QueueUtils.offer(tmpUrl);
+                        QueueUtils.offer(new StringUrl(tmpUrl,url.getCurrent()));
                     }
                 }
             }

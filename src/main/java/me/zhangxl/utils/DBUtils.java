@@ -47,7 +47,7 @@ public class DBUtils {
             ps.setString(4,person.getShortIntroduction());
             ps.setString(5,person.getLocation());
             ps.setString(6,person.getBusiness());
-            ps.setString(7,person.getGender() == null ? null : person.getGender().toString());
+            ps.setString(7,person.getGenderAsString());
             ps.setString(8,person.getEmployment());
             ps.setString(9,person.getPosition());
             ps.setString(10,person.getEducation());
@@ -65,7 +65,7 @@ public class DBUtils {
             int result = ps.executeUpdate();
             ps.close();
             return result == 1;
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             throw new IllegalStateException(person.toString(),e);
         }
     }

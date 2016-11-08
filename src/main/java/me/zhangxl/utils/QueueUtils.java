@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Created by zhangxiaolong on 16/11/6.
  */
 public class QueueUtils {
-    private static FixedSizeQueue<String> urlStrings = new FixedSizeQueue<>(100);
+    private static FixedSizeQueue<StringUrl> urlStrings = new FixedSizeQueue<>(100);
 
     public static void init() {
         populateUrlQueue();
@@ -21,7 +21,7 @@ public class QueueUtils {
             FileInputStream inputStream = new FileInputStream(AppConfig.URL_FILE);
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
-                urlStrings.offer(scanner.nextLine());
+                urlStrings.offer(new StringUrl(scanner.nextLine(),null));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -36,22 +36,22 @@ public class QueueUtils {
         return urlStrings.isEmpty();
     }
 
-    public static boolean offer(String url) {
+    public static boolean offer(StringUrl url) {
         return urlStrings.offer(url);
     }
 
-    public static boolean addAll(Collection<String> target) {
+    public static boolean addAll(Collection<StringUrl> target) {
         return urlStrings.offerAll(target);
     }
 
     /**
      * @return 返回一个url，但是当没有东西的时候，会使得程序自动退出
      */
-    public static String poll() {
+    public static StringUrl poll() {
         return urlStrings.poll();
     }
 
-    public static String peek(){
+    public static StringUrl peek(){
         return urlStrings.peek();
     }
 
